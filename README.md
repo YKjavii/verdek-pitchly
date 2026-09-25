@@ -4,7 +4,10 @@ Prospect research, outreach, and pipeline tracking for Verdek Studio — find
 local businesses worth pitching, score how warm the opportunity is, generate
 a pitch, and track it through to won/lost. Multi-user, with an admin portal.
 
-This replaces the earlier single-page Claude Artifact version. Same scoring
+This replaces the earlier single-page Claude Artifact version — and carries
+over its full feature set (opportunity audit, qualification, objection
+handling, follow-up sequencing, the website concept generator, funnel
+analytics, appearance/palette settings), not just the basics. Same scoring
 logic and pitch templates, now backed by a real database with accounts,
 roles, and an admin view — so your team can log in from anywhere and it
 doesn't live in one browser's local storage.
@@ -23,7 +26,21 @@ for exactly where the ceilings are and what triggers a bill.
 - **Prospects** — add manually or via a sweep, filter/search, opportunity
   score (hot/warm/cool) based on reviews, rating, and whether they already
   have a website.
-- **Pipeline** — a kanban board across your outreach stages.
+- **Opportunity audit** — an honest, fact-only readout per prospect: website
+  status, the specific gap, a recommended fix, and a checklist to verify
+  before you pitch.
+- **Outreach** — three tabs in one place: **Queue** (one untouched prospect
+  at a time, message ready to send), **Follow-ups** (due-now / coming-up,
+  scheduled at 2/4/7/10 days, stops the moment someone replies), and
+  **Pipeline** (the kanban board across every stage).
+- **Qualification & objections** — tag a prospect hot/warm/price-sensitive/
+  not-now/unlikely (strong ones auto-advance the stage), and log the specific
+  blocker (price, timing, trust, etc.) to get a tailored reply.
+- **Website concept generator** — a live-preview, one-page mock site built
+  from a prospect's real name/rating/reviews/contact, in a choice of
+  palettes, exportable as a single HTML file to show them.
+- **Funnel analytics** — where prospects actually drop out, the biggest leak
+  with coaching on what to change, objections heard, and why deals were lost.
 - **Pitch generator** — fills your package/pricing tokens into a message,
   never invents facts about a business it doesn't have.
 - **Sweeps** — a lightweight workflow for asking Claude to go find more
@@ -31,7 +48,8 @@ for exactly where the ceilings are and what triggers a bill.
   is assisted, not a background robot).
 - **Realtime sync** — add or update a prospect on one device, see it appear
   everywhere else logged in, instantly.
-- Light/dark mode, mobile-friendly.
+- **Appearance** — light/dark/system theme, a choice of accent palettes, and
+  a reduce-motion toggle, all per-device. Mobile-friendly throughout.
 
 ## Architecture, in one paragraph
 

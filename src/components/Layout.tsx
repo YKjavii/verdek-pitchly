@@ -4,7 +4,8 @@ import { useAuth } from '../context/AuthContext'
 const NAV = [
   { to: '/', label: 'Home', end: true },
   { to: '/prospects', label: 'Prospects' },
-  { to: '/pipeline', label: 'Pipeline' },
+  { to: '/outreach', label: 'Outreach' },
+  { to: '/funnel', label: 'Funnel' },
   { to: '/sweeps', label: 'Sweeps' },
   { to: '/settings', label: 'Settings' },
 ]

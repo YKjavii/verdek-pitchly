@@ -27,3 +27,19 @@ export const addDays = (n: number, from?: string): string => {
 export const daysSince = (iso: string): number => Math.floor((Date.now() - new Date(iso).getTime()) / 864e5)
 
 export const plural = (n: number, a: string, b?: string) => (n === 1 ? a : b || a + 's')
+
+/** Escapes text for safe interpolation into a raw HTML string (used by the concept generator, which builds a standalone document). */
+export const escapeHtml = (s: string): string =>
+  (s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] as string)
+
+/** Strips common legal suffixes for friendlier copy ("Sunset Tours Ltd" -> "Sunset Tours"). */
+export const shortName = (name: string): string =>
+  name.replace(/\s*\b(ltd\.?|limited|inc\.?|llc|co\.?)\b\.?\s*$/gi, '').trim() || name
+
+/** Formats a short "Mon D" style date for follow-up/funnel UI. */
+export const fmtShortDate = (iso: string): string => {
+  if (!iso) return ''
+  const d = new Date(iso + 'T00:00:00')
+  if (Number.isNaN(d.getTime())) return iso
+  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+}

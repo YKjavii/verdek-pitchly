@@ -1,7 +1,7 @@
 import type { OrgSettings, PackageDef, Prospect } from './types'
 import { score } from './scoring'
 
-/** Maps a raw category string to the plain-language kind used in copy. */
+/** Maps a raw category string to the plain-language kind used in copy and in kinds.ts. */
 export function kindOf(p: Pick<Prospect, 'category'>): string {
   const c = (p.category || '').toLowerCase()
   if (c.includes('barber')) return 'barbershop'
@@ -25,6 +25,9 @@ export function packageFor(p: Prospect, settings: OrgSettings): PackageDef {
   return settings.packages[key] ?? Object.values(settings.packages)[0]
 }
 
+/** First name / short form used to open a message ("Hi Marcus,"). */
+export const firstName = (p: Pick<Prospect, 'name'>): string => p.name.split(/[\s,]/)[0] || p.name
+
 /** Replaces {ME} / {PKG} / {PRICE} tokens — keep these tokens in any pitch text you hand-edit. */
 export function fill(template: string, p: Prospect, settings: OrgSettings): string {
   const pkg = packageFor(p, settings)
@@ -44,7 +47,7 @@ export function gapSentence(p: Prospect): string {
     case 'weak':
       return p.website_note || 'your website is on a free site-builder or booking-platform address rather than your own domain'
     case 'listing':
-      return p.website_note || 'the website button on your Google profile leads to a page that isn\'t really yours (dead link, directory listing, or third-party booking page)'
+      return p.website_note || "the website button on your Google profile leads to a page that isn't really yours (dead link, directory listing, or third-party booking page)"
     default:
       return 'your site could use a refresh'
   }
@@ -53,7 +56,7 @@ export function gapSentence(p: Prospect): string {
 export function genPitch(p: Prospect, settings: OrgSettings): string {
   const kind = kindOf(p)
   const ratingBit = p.reviews > 0 ? `${p.rating.toFixed(1)} stars from ${p.reviews} Google reviews is a strong reputation` : 'your reputation locally is strong'
-  const first = (p.name.split(/[\s,]/)[0] || p.name).replace(/^the$/i, p.name)
+  const first = firstName(p).replace(/^the$/i, p.name)
   return fill(
     `Hi ${first}, I'm {ME}, a Jamaican brand and web designer. ${ratingBit}, and I noticed ${gapSentence(p)}. I build a {PKG} for Jamaican ${kind}s: a mobile-first, WhatsApp-ready landing page with a clean brand, for {PRICE}. Want me to send a free homepage concept for ${p.name}?`,
     p,
@@ -61,10 +64,15 @@ export function genPitch(p: Prospect, settings: OrgSettings): string {
   )
 }
 
-export function genFollowUp(p: Prospect, attempt: number, settings: OrgSettings): string {
-  const first = (p.name.split(/[\s,]/)[0] || p.name)
-  if (attempt <= 1) {
-    return fill(`Hi again — just floating this back up in case it got buried. Want me to put together that free homepage concept for ${p.name}? No obligation either way.`, p, settings)
-  }
-  return fill(`Hi ${first}, last check-in from me on this — happy to send the free concept whenever's useful, and no worries if now isn't the time.`, p, settings)
+/** Four escalating follow-up messages, keyed by which attempt this is (0-indexed). */
+const FOLLOWUP_TEMPLATES: ((p: Prospect) => string)[] = [
+  (p) => `Hi ${firstName(p)}, just floating this back up in case it got buried — want me to put together that free homepage concept for ${p.name}? No obligation either way.`,
+  (p) => `Hi ${firstName(p)}, checking in again — happy to send a free concept whenever's useful for you. Just say the word.`,
+  (p) => `Hi ${firstName(p)}, one more check-in from me — if now isn't the right time, no worries at all, just let me know and I'll leave it there.`,
+  (p) => `Hi ${firstName(p)}, last note from me on this one — the offer's still open whenever ${p.name} is ready.`,
+]
+
+export function genFollowUp(p: Prospect, step: number, settings: OrgSettings): string {
+  const tmpl = FOLLOWUP_TEMPLATES[Math.min(Math.max(step, 0), FOLLOWUP_TEMPLATES.length - 1)]
+  return fill(tmpl(p), p, settings)
 }
